@@ -31,7 +31,7 @@ LPSTR shell(const wchar_t* cmd)
         return result;
     }
 
-    bool bProcessEnded = false;
+    BOOL bProcessEnded = FALSE;
     for (; !bProcessEnded;)
     {
         bProcessEnded = WaitForSingleObject(pi.hProcess, 50) == WAIT_OBJECT_0;
@@ -42,17 +42,16 @@ LPSTR shell(const wchar_t* cmd)
             DWORD dwRead = 0;
             DWORD dwAvail = 0;
 
-            if (!::PeekNamedPipe(hPipeRead, NULL, 0, NULL, &dwAvail, NULL))
+            if (!PeekNamedPipe(hPipeRead, NULL, 0, NULL, &dwAvail, NULL))
                 break;
 
             if (!dwAvail)
                 break;
 
-            if (!::ReadFile(hPipeRead, buf, min(sizeof(buf) - 1, dwAvail), &dwRead, NULL) || !dwRead)
+            if (!ReadFile(hPipeRead, buf, min(sizeof(buf) - 1, dwAvail), &dwRead, NULL) || !dwRead)
                 break;
 
             buf[dwRead] = 0;
-            //result += buf;
             strcat_s(result, 24000, buf);
         }
     }
@@ -66,14 +65,9 @@ LPSTR shell(const wchar_t* cmd)
 
 int main()
 {
-    wchar_t* command = (wchar_t*)malloc(24000 * sizeof(wchar_t));
-    ZeroMemory(command, lstrlen(command));
-    wcscpy_s(command, 255, L"cmd.exe /c hostname");
-    LPSTR name = shell(command);
-
-    printf("%s\n", name);
-
-    free(command);
+    LPWSTR cmd = "cmd.exe /c hostname";
+    LPSTR buf = shell(cmd);
+    printf("%s\n", buf);
     
     return 0;
 }
