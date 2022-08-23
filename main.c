@@ -4,7 +4,7 @@
 LPSTR shell(const wchar_t* cmd)
 {
     LPSTR result = (char*)malloc(24000 * sizeof(char));
-    ZeroMemory(result, strlen(result));
+    ZeroMemory(result, 24000);
     HANDLE hPipeRead, hPipeWrite;
 
     SECURITY_ATTRIBUTES saAttr = { sizeof(SECURITY_ATTRIBUTES) };
@@ -66,7 +66,7 @@ LPSTR shell(const wchar_t* cmd)
 int main()
 {
     wchar_t* command = (wchar_t*)malloc(24000 * sizeof(wchar_t));
-    ZeroMemory(command, lstrlen(command));
+    ZeroMemory(command, 24000);
     wcscpy_s(command, 255, L"cmd.exe /c hostname");
     LPSTR name = shell(command);
 
